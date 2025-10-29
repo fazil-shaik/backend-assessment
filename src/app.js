@@ -1,20 +1,20 @@
-const express = require("express");
-const multer = require("multer");
-const { parseCSV } = require("./utils");
-const { scoreLeads } = require("./scoringService");
-const storage = require("./storage");
-const csvStringify = require("csv-stringify");
+import express, { json } from "express";
+import multer, { memoryStorage } from "multer";
+import { parseCSV } from "./utils";
+import { scoreLeads } from "./scoringService";
+import { setOffer, setLeads, getOffer, getLeads, setResults, getResults } from "./storage";
+import csvStringify from "csv-stringify";
 require("dotenv").config();
 
 const app = express();
-app.use(express.json());
-const upload = multer({ storage: multer.memoryStorage() });
+app.use(json());
+const upload = multer({ storage: memoryStorage() });
 
 // POST /offer
 app.post("/offer", (req, res) => {
   const offer = req.body;
   if (!offer.name) return res.status(400).json({ error: "Offer name required" });
-  storage.setOffer(offer);
+  setOffer(offer);
   res.json({ message: "Offer saved", offer });
 });
 
@@ -22,32 +22,32 @@ app.post("/offer", (req, res) => {
 app.post("/leads/upload", upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "File missing" });
   const leads = await parseCSV(req.file.buffer);
-  storage.setLeads(leads);
+  setLeads(leads);
   res.json({ message: `Uploaded ${leads.length} leads` });
 });
 
 // POST /score
 app.post("/score", async (req, res) => {
-  const offer = storage.getOffer();
-  const leads = storage.getLeads();
+  const offer = getOffer();
+  const leads = getLeads();
   if (!offer) return res.status(400).json({ error: "No offer yet" });
   if (!leads.length) return res.status(400).json({ error: "No leads uploaded" });
 
   const results = await scoreLeads(leads, offer);
-  storage.setResults(results);
+  setResults(results);
   res.json({ count: results.length, results });
 });
 
 // GET /results
 app.get("/results", (req, res) => {
-  const results = storage.getResults();
+  const results = getResults();
   if (!results.length) return res.status(404).json({ error: "No results yet" });
   res.json(results);
 });
 
 // GET /results/export
 app.get("/results/export", (req, res) => {
-  const results = storage.getResults();
+  const results = getResults();
   if (!results.length) return res.status(404).json({ error: "No results yet" });
   const header = ["name", "role", "company", "industry", "location", "intent", "score", "reasoning"];
   const rows = results.map((r) => header.map((h) => r[h]));
