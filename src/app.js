@@ -11,6 +11,10 @@ const app = express();
 app.use(json());
 const upload = multer({ storage: memoryStorage() });
 
+app.get("/", (req, res) => {
+  res.send("AI Lead Scoring Service is running.");
+});
+
 // POST /offer
 app.post("/offer", (req, res) => {
   const offer = req.body;
