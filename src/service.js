@@ -1,6 +1,6 @@
-import { post } from "axios";
-require("dotenv").config();
-
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 // Gemini endpoint
@@ -21,7 +21,7 @@ export async function getAIIntent(lead, offer) {
   `;
 
   try {
-    const res = await post(GEMINI_URL, {
+    const res = await axios.post(GEMINI_URL, {
       contents: [{ parts: [{ text: prompt }] }]
     });
     const text = res.data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";

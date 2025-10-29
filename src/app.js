@@ -1,10 +1,11 @@
 import express, { json } from "express";
 import multer, { memoryStorage } from "multer";
-import { parseCSV } from "./utils";
-import { scoreLeads } from "./scoringService";
-import { setOffer, setLeads, getOffer, getLeads, setResults, getResults } from "./storage";
-import csvStringify from "csv-stringify";
-require("dotenv").config();
+import { parseCSV } from "./utils.js";
+import { scoreLeads } from "./scoring.js";
+import { setOffer, setLeads, getOffer, getLeads, setResults, getResults } from "./storage.js";
+import {stringify} from "csv-stringify";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(json());
@@ -51,7 +52,7 @@ app.get("/results/export", (req, res) => {
   if (!results.length) return res.status(404).json({ error: "No results yet" });
   const header = ["name", "role", "company", "industry", "location", "intent", "score", "reasoning"];
   const rows = results.map((r) => header.map((h) => r[h]));
-  csvStringify([header, ...rows], (err, csv) => {
+  stringify([header, ...rows], (err, csv) => {
     if (err) return res.status(500).json({ error: err.message });
     res.setHeader("Content-Type", "text/csv");
     res.send(csv);

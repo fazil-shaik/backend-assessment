@@ -2,11 +2,11 @@ let offer = null;
 let leads = [];
 let results = [];
 
-exports.setOffer = (data) => (offer = data);
-exports.getOffer = () => offer;
+export function setOffer(data) { return (offer = data); }
+export function getOffer() { return offer; }
 
-exports.setLeads = (data) => (leads = data);
-exports.getLeads = () => leads;
+export function setLeads(data) { return (leads = data); }
+export function getLeads() { return leads; }
 
-exports.setResults = (data) => (results = data);
-exports.getResults = () => results;
+export function setResults(data) { return (results = data); }
+export function getResults() { return results; }
