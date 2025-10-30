@@ -29,5 +29,11 @@ curl -X POST http://localhost:3000/score
 # Get results
 curl http://localhost:3000/results
 
+### Rule Logic
+# Role: decision-maker +20, influencer +10
+# Industry: exact ICP +20, partial +10
+# Completeness: all fields +10
+# Gemini AI adds +50 (High), +30 (Medium), +10 (Low)
+
 
 live url:https://backend-assessment-ten.vercel.app/
