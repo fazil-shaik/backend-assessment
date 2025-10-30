@@ -28,3 +28,6 @@ curl -X POST http://localhost:3000/score
 
 # Get results
 curl http://localhost:3000/results
+
+
+live url:https://backend-assessment-ten.vercel.app/
